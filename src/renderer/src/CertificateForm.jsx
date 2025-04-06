@@ -168,6 +168,9 @@
 import React, { useState } from "react";
 import { PDFDocument, rgb, StandardFonts, TextAlignment,} from "pdf-lib";
  import '../src/assets/main.css';
+
+
+
 const CertificatePDF = () => {
   const [name, setName] = useState("Ms Jane Doe");
   const [college, setCollege] = useState("IFET College of Engineering, Villupuram");
@@ -269,30 +272,70 @@ const CertificatePDF = () => {
     // Add Logo
     if (logo) {
       const logoImage = await pdfDoc.embedPng(logo);
-      page.drawImage(logoImage, { x: 50, y: height - 100, width: 100, height: 100 });
+      page.drawImage(logoImage, { x: 50, y: height - 120, width: 249, height:150 });
     }
 
     // Add Signature
     if (signature) {
       const leftMargin = 50, bottomMargin = 50;
       const signatureImage = await pdfDoc.embedPng(signature);
-      page.drawImage(signatureImage, { x: leftMargin, y: bottomMargin + 100, width: 150, height: 60 });
+      page.drawImage(signatureImage, { x: leftMargin, y: bottomMargin + 180, width: 150, height: 60 });
 
-      page.drawText("Authorized Signature", { x: leftMargin, y: bottomMargin + 80, size: 12, font, color: rgb(0, 0, 0.5) });
-      page.drawText("K.R. SRIDHAR", { x: leftMargin, y: bottomMargin + 60, size: 12, font, color: rgb(0, 0, 0) });
-      page.drawText("Business Development Manager", { x: leftMargin, y: bottomMargin + 40, size: 12, font, color: rgb(0, 0, 0) });
-      page.drawText("AAHA Solutions", { x: leftMargin, y: bottomMargin+20, size: 12, font, color: rgb(0, 0, 0) });
+      page.drawText("Authorized Signature", { x: leftMargin, y: bottomMargin + 160, size: 12, font, color: rgb(0, 0, 0.5) });
+      page.drawText("K.R. SRIDHAR", { x: leftMargin, y: bottomMargin + 140, size: 12, font, color: rgb(0, 0, 0) });
+      page.drawText("Business Development Manager", { x: leftMargin, y: bottomMargin + 120, size: 12, font, color: rgb(0, 0, 0) });
+      page.drawText("AAHA Solutions", { x: leftMargin, y: bottomMargin+100, size: 12, font, color: rgb(0, 0, 0) });
     }
     // ✅ Footer Section - Adjusted Position to Ensure Visibility
-  const footerY = 40; // Ensure it's within page bounds
-
-  page.drawText("info@aahasolutions.com", { x: 50, y: 40, size: 10, font, color: rgb(0, 0, 0) });
-  page.drawText("www.aahasolutions.com", { x: 250, y: 40, size: 10, font, color: rgb(0, 0, 0) });
-  page.drawText("+91 809 829 9921", { x: 450, y: 40, size: 10, font, color: rgb(0, 0, 0) });
-  page.drawText("No: 27, SithanKudi, Puducherry- 605 013.", { x: 50, y: 20, size: 10, font, color: rgb(0, 0, 0) });
+  const iconfooterY= 100; // Ensure it's within page bounds
 
 
-    // Save and Download PDF
+  page.drawText("info@aahasolutions.com", { x: 50, y: 100, size: 10, font, color: rgb(0, 0, 0) });
+  page.drawText("www.aahasolutions.com", { x: 250, y: 100, size: 10, font, color: rgb(0, 0, 0) });
+  page.drawText("+91 809 829 9921", { x: 450, y: 100, size: 10, font, color: rgb(0, 0, 0) });
+  page.drawText("No: 27, SithanKudi, Puducherry- 605 013.", { x: 50, y: 80, size: 10, font, color: rgb(0, 0, 0) });
+  
+//   // ✅ Add Green Curved Footer Directly
+const footerHeight = 50; // Adjust as needed
+const footerY = footerHeight+0; // Positioned at the bottom
+
+// Draw a smooth curved footer using SVG path
+page.drawSvgPath(
+  "M0,0 C200,150 600,-50 800,0 L800,100 L0,100 Z",
+  {
+    x: 0,
+    y: footerY, // Bottom of the page
+    scale: 1,
+    color: rgb(0.3, 0.6, 0.3), // Green Color
+  }
+);
+// const footerHeight = 80;
+// const footerY = 0; // Bottom of the page
+
+// // Green footer rectangle
+// page.drawRectangle({
+//   x: 0,
+//   y: footerY,
+//   width: width,
+//   height: footerHeight,
+//   color: rgb(0.3, 0.7, 0.2),
+// });
+// // // ✅ White rounded rectangle overlay on left side
+// // const whiteBoxWidth = 40;
+// // const whiteBoxHeight = footerHeight + 10;
+
+// // page.drawRectangle({
+// //   x: 0,
+// //   y: footerY,
+// //   width: whiteBoxWidth,
+// //   height: whiteBoxHeight,
+// //   color: rgb(1, 1, 1), // white
+// // });
+
+
+
+
+// Save and Download PDF
     const pdfBytes = await pdfDoc.save();
     const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
     const link = document.createElement("a");

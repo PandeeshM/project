@@ -157,7 +157,7 @@
 import React from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 // import'../src/assets/main.css';
-const PDFLibCertificate = async ({ name, course, logo, signature }) => {
+const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([800, 600]);
   const date = new Date().toLocaleDateString(); // Formats today's date
@@ -282,8 +282,30 @@ const PDFLibCertificate = async ({ name, course, logo, signature }) => {
       console.error("Failed to load signature:", error);
     }
   }
+  
+// Draw the green curve using SVG path
+// ✅ Add Green Curved Footer Directly
+// const footerHeight = 80; // Adjust as needed
+// const footerY = 0; // Positioned at the bottom
 
-  // ✅ Save and Download PDF
+// // Draw a smooth curved footer using SVG path
+// page.drawRectangle(
+//   // "M0,0 C200,150 600,-50 800,0 L800,100 L0,100 Z",
+//   {
+//     x: 0,
+//     y: 0, // Bottom of the page
+//     width:width,
+//     height:footerY,
+//     // scale: 1,
+//     color: rgb(0.3, 0.6, 0.3), // Green Color
+//   }
+// );
+
+
+
+
+
+ // ✅ Save and Download PDF
   const pdfBytes = await pdfDoc.save();
   const blob = new Blob([pdfBytes], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
