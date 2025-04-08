@@ -188,14 +188,14 @@ const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
         width: 100,
         height: 100,
       });
-    } catch (error) {
+    } catch (error){
       console.error("Failed to load logo:", error);
     }
   }
 
   // ✅ Add Certificate Title
-  const titleText = "Certificate of Completion";
-  const textWidth = titleFont.widthOfTextAtSize(titleText, 30);
+  const titleText = "INDURSTIAL VISIT CERTIFICATE";
+  const textWidth =  helveticaBold.widthOfTextAtSize(titleText, 20);
   const centerX = (width - textWidth) / 2; 
   
   page.drawText(titleText, {
@@ -228,7 +228,7 @@ const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
     x: 200,
     y: height - 160,
     size: 24,
-    font: titleFont,
+    font: helveticaBold,
     color: blue,
   });
 
@@ -271,7 +271,7 @@ const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
         height: 50,
       });
 
-      page.drawText("Authorized Signature", {
+      page.drawText("Kind Regards", {
         x: 550,
         y: footerY + 30,
         size: 10,
