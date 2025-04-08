@@ -9,7 +9,7 @@
     http-equiv="Content-Security-Policy"
     content="
       default-src 'self'; 
-      script-src 'self' 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE=' 'nonce-abc123'; 
+      script-src 'self' ; 
       style-src 'self' 'unsafe-inline'; 
       img-src 'self' data:; 
       connect-src 'self' data:; 
@@ -22,7 +22,5 @@
   <body>
  <div id="root"></div>
  <script type="module" src="/src/main.jsx"></script>
- console.log("Hello, world!");
-
- </body>
+</body>
 </html>
