@@ -131,23 +131,7 @@ const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
     }
   }
   
-// Draw the green curve using SVG path
-// ✅ Add Green Curved Footer Directly
-// const footerHeight = 80; // Adjust as needed
-// const footerY = 0; // Positioned at the bottom
 
-// // Draw a smooth curved footer using SVG path
-// page.drawRectangle(
-//   // "M0,0 C200,150 600,-50 800,0 L800,100 L0,100 Z",
-//   {
-//     x: 0,
-//     y: 0, // Bottom of the page
-//     width:width,
-//     height:footerY,
-//     // scale: 1,
-//     color: rgb(0.3, 0.6, 0.3), // Green Color
-//   }
-// );
 
 
 
