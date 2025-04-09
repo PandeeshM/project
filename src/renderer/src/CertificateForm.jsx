@@ -2,6 +2,103 @@ import React, { useState } from "react";
 import { PDFDocument, rgb, StandardFonts, TextAlignment,} from "pdf-lib";
  import '../src/assets/main.css';
 
+const generatePDF2 = async () => {
+const pdfDoc = await PDFDocument.create();
+const page = pdfDoc.addPage([600, 400]); // Example size
+
+  // Load icons
+  const skypeIconUrl = "/icons/skype.png";
+  const skypeIconBytes = await fetch(skypeIconUrl).then(res => res.arrayBuffer());
+  const skypeIcon = await pdfDoc.embedPng(skypeIconBytes);
+
+  // Use icon
+  page.drawImage(skypeIcon, {
+    x: 50,
+    y: 50,
+    width: 12,
+    height: 12,
+  });
+  const webIconUrl = "/icons/web.png";
+  const webIconBytes = await fetch(webIconUrl).then(res => res.arrayBuffer());
+  const webpeIcon = await pdfDoc.embedPng(webIconBytes);
+
+  // Use icon
+  page.drawImage(webpeIcon, {
+    x: 50,
+    y: 50,
+    width: 12,
+    height: 12,
+  });
+  const emailIconUrl = "/icons/email.png";
+  const emailIconBytes = await fetch(emailIconUrl).then(res => res.arrayBuffer());
+  const emailIcon = await pdfDoc.embedPng(emailIconBytes);
+
+  // Use icon
+  page.drawImage(emailIcon, {
+    x: 50,
+    y: 50,
+    width: 12,
+    height: 12,
+  });
+  const phoneIconUrl = "/icons/phone.png";
+  const phoneIconBytes = await fetch(phoneIconUrl).then(res => res.arrayBuffer());
+  const phoneIcon = await pdfDoc.embedPng(phoneIconBytes);
+
+  // Use icon
+  page.drawImage(phoneIcon, {
+    x: 50,
+    y: 50,
+    width: 12,
+    height: 12,
+  });
+  const locationIconUrl = "/icons/location.png";
+  const locationIconBytes = await fetch(locationIconUrl).then(res => res.arrayBuffer());
+  const locationIcon = await pdfDoc.embedPng(locationIconBytes);
+
+  // Use icon
+  page.drawImage(locationIcon, {
+    x: 50,
+    y: 50,
+    width: 12,
+    height: 12,
+  });
+
+  // ... rest of your PDF logic
+};
+
+ // repeat for others as needed
+//  const generatePDF = async () => {
+//   const pdfDoc = await PDFDocument.create();
+
+//   const skypeIconUrl = "/icons/skype.png";
+//   const webIconUrl = "/icons/web.png";
+//   const emailIconUrl = "/icons/email.png";
+//   const phoneIconUrl = "/icons/phone.png";
+//   const locationIconUrl = "/icons/location.png";
+
+//   const skypeIconBytes = await fetch(skypeIconUrl).then(res => res.arrayBuffer());
+//   const skypeIcon = await pdfDoc.embedPng(skypeIconBytes);
+
+//   const webIconBytes = await fetch(webIconUrl).then(res => res.arrayBuffer());
+//   const webIcon = await pdfDoc.embedPng(webIconBytes);
+
+//   const emailIconBytes = await fetch(emailIconUrl).then(res => res.arrayBuffer());
+//   const emailIcon = await pdfDoc.embedPng(emailIconBytes);
+
+//   const phoneIconBytes = await fetch(phoneIconUrl).then(res => res.arrayBuffer());
+//   const phoneIcon = await pdfDoc.embedPng(phoneIconBytes);
+
+//   const locationIconBytes = await fetch(locationIconUrl).then(res => res.arrayBuffer());
+//   const locationIcon = await pdfDoc.embedPng(locationIconBytes);
+
+  // Now you can use drawImage to place them on the page...
+
+
+
+
+
+
+
 
 
 const CertificatePDF = () => {
@@ -238,6 +335,53 @@ page.drawText(quotedProject, {
       thickness: 2,
       color: rgb(0.4, 0.4, 0.4),
     });
+    // Create the formatted date string
+const dateText = "Date: ";
+const day = "4";
+const suffix = "th"; // You can make this dynamic
+const monthYear = " April 2025";
+
+// Set X, Y position based on page width and desired top padding
+const pageWidth = page.getWidth();
+const dateX = pageWidth - 180;  // Adjust to align to the right
+const dateY = page.getHeight() - 120;
+
+// Draw "Date: "
+page.drawText(dateText, {
+  x: dateX,
+  y: dateY,
+  size: 12,
+  font,
+  color: rgb(0, 0, 0),
+});
+
+// Draw "4"
+page.drawText(day, {
+  x: dateX + 38,
+  y: dateY,
+  size: 12,
+  font,
+  color: rgb(0, 0, 0),
+});
+
+// Draw superscript "th"
+page.drawText(suffix, {
+  x: dateX + 48,
+  y: dateY + 4, // Slightly higher for superscript
+  size: 8,
+  font,
+  color: rgb(0, 0, 0),
+});
+
+// Draw " April 2025"
+page.drawText(monthYear, {
+  x: dateX + 60,
+  y: dateY,
+  size: 12,
+  font,
+  color: rgb(0, 0, 0),
+});
+
     // Add Signature
     if (signature) {
       const leftMargin = 50, bottomMargin = 50;
@@ -262,36 +406,147 @@ page.drawRectangle({
 });
 
 
-// 2. Draw white capsule box (with rounded corners)
-const capsuleWidth = width - 100;
-const capsuleHeight = 60;
-const capsuleX = (width - capsuleWidth) / 2;
-const capsuleY = footerHeight - capsuleHeight / 2; // Position it centered vertically within the green bar
+ // 2. Draw white capsule box (with rounded corners)
+// const capsuleWidth = width - 100;
+// const capsuleHeight = 60;
+// const capsuleX = (width - capsuleWidth) / 2;
+// const capsuleY = footerHeight - capsuleHeight / 2; // Position it centered vertically within the green bar
 
+// page.drawRectangle({
+//   x: capsuleX,
+//   y: capsuleY,
+//   width: capsuleWidth,
+//   height: capsuleHeight,
+//   color: rgb(1, 1, 1),
+//   borderRadius: 30, // makes it curved like a capsule
+// });
+// Dimensions
+const capsuleWidth = width - 200;
+const capsuleHeight = 70;
+// const capsuleX = (width - capsuleWidth) / 2;
+const capsuleX = 0;
+const capsuleY = footerHeight - capsuleHeight / 2;
+
+// Left rounded end
+page.drawEllipse({
+  x: capsuleX + capsuleHeight / 2,
+  y: capsuleY + capsuleHeight / 2,
+  xScale: capsuleHeight / 2,
+  yScale: capsuleHeight / 2,
+  color: rgb(1, 1, 1),
+});
+
+// Right rounded end
+page.drawEllipse({
+  x: capsuleX + capsuleWidth - capsuleHeight / 2,
+  y: capsuleY + capsuleHeight / 2,
+  xScale: capsuleHeight / 2,
+  yScale: capsuleHeight / 2,
+  color: rgb(1, 1, 1),
+});
+
+// Center rectangle
 page.drawRectangle({
-  x: capsuleX,
+  x: capsuleX + capsuleHeight / 2,
   y: capsuleY,
-  width: capsuleWidth,
+  width: capsuleWidth - capsuleHeight,
   height: capsuleHeight,
   color: rgb(1, 1, 1),
-  borderRadius: 30, // makes it curved like a capsule
 });
 
     // 3. Add Text inside the capsule
     const textStartY = capsuleY + capsuleHeight / 2 + 5; // Start text slightly above the vertical center
     const textLineHeight = 15;
     const textLeftMargin = capsuleX + 20;
-    const textRightMargin = capsuleX + capsuleWidth - 250; // Adjust as needed
+    const textRightMargin = capsuleX + capsuleWidth - 200; // Adjust as needed
     const footerFontSize = 9;
+    
 
-    page.drawText("aahasolutions.com", { x: textLeftMargin + 20 , y: textStartY + textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) }); // Placeholder, Skipped Skype icon logic
-    page.drawText("www.aahasolutions.com", { x: textLeftMargin+20, y: textStartY - textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
+    // page.drawText("aahasolutions.com", { x: textLeftMargin + 20 , y: textStartY + textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) }); // Placeholder, Skipped Skype icon logic
+    // page.drawText("www.aahasolutions.com", { x: textLeftMargin+20, y: textStartY - textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
 
-    page.drawText("info@aahasolutions.com", { x: textRightMargin - 50, y: textStartY + textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
-    page.drawText("+918098299921", { x: textRightMargin -50, y: textStartY - textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
+    // page.drawText("info@aahasolutions.com", { x: textRightMargin - 50, y: textStartY + textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
+    // page.drawText("+918098299921", { x: textRightMargin -50, y: textStartY - textLineHeight / 2, size: footerFontSize, font, color: rgb(0, 0, 0) });
 
-    page.drawText("No:27,3rdCross,SithanKudi,BrindavanColony,Puducherry-605013.", { x: textLeftMargin+20, y: textStartY - textLineHeight * 1.5, size: footerFontSize-1, font, color: rgb(0, 0, 0) });
-
+    // page.drawText("No:27,3rdCross,SithanKudi,BrindavanColony,Puducherry-605013.", { x: textLeftMargin+20, y: textStartY - textLineHeight * 1.5, size: footerFontSize-1, font, color: rgb(0, 0, 0) });
+    const iconSize = 12;
+    const iconTextGap = 6;
+    
+    // Row 1: Skype
+    page.drawImage(skypeIcon, {
+      x: textLeftMargin,
+      y: textStartY + textLineHeight / 2 - 2,
+      width: iconSize,
+      height: iconSize,
+    });
+    page.drawText("aahasolutions.com", {
+      x: textLeftMargin + iconSize + iconTextGap,
+      y: textStartY + textLineHeight / 2,
+      size: footerFontSize,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
+    // Row 2: Web
+    page.drawImage(webIcon, {
+      x: textLeftMargin,
+      y: textStartY - textLineHeight / 2 - 2,
+      width: iconSize,
+      height: iconSize,
+    });
+    page.drawText("www.aahasolutions.com", {
+      x: textLeftMargin + iconSize + iconTextGap,
+      y: textStartY - textLineHeight / 2,
+      size: footerFontSize,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
+    // Row 3 (Right): Email
+    page.drawImage(emailIcon, {
+      x: textRightMargin - 70,
+      y: textStartY + textLineHeight / 2 - 2,
+      width: iconSize,
+      height: iconSize,
+    });
+    page.drawText("info@aahasolutions.com", {
+      x: textRightMargin - 70 + iconSize + iconTextGap,
+      y: textStartY + textLineHeight / 2,
+      size: footerFontSize,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
+    // Row 4 (Right): Phone
+    page.drawImage(phoneIcon, {
+      x: textRightMargin - 70,
+      y: textStartY - textLineHeight / 2 - 2,
+      width: iconSize,
+      height: iconSize,
+    });
+    page.drawText("+918098299921", {
+      x: textRightMargin - 70 + iconSize + iconTextGap,
+      y: textStartY - textLineHeight / 2,
+      size: footerFontSize,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
+    // Row 5: Address
+    page.drawImage(locationIcon, {
+      x: textLeftMargin,
+      y: textStartY - textLineHeight * 1.5 - 2,
+      width: iconSize,
+      height: iconSize,
+    });
+    page.drawText("No:27,3rdCross,SithanKudi,BrindavanColony,Puducherry-605013.", {
+      x: textLeftMargin + iconSize + iconTextGap,
+      y: textStartY - textLineHeight * 1.5,
+      size: footerFontSize - 1,
+      font,
+      color: rgb(0, 0, 0),
+    });
+    
 // End Footer Section
 // Remove commented out old footer code
 // const footerHeight = 80;
@@ -322,8 +577,7 @@ page.drawRectangle({
     console.error("error generatingPDF:",error);
   }
 }
-
-  return (
+return (
     <div className="certificate-generator">
       <h1>PDFLib Certificate Generator</h1>
 

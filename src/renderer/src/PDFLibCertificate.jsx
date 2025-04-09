@@ -3,6 +3,8 @@
 import React from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 // import'../src/assets/main.css';
+
+
 const PDFLibCertificate = async ({ name, course, logo, signature ,}) => {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([800, 600]);
