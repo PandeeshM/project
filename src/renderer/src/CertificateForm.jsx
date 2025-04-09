@@ -363,7 +363,7 @@ page.drawRectangle({
     const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(pdfBlob);
-    link.download = "certificate.pdf","application/pdf";
+    link.download = "certificate.pdf";
     link.click();
     URL.revokeObjectURL(link.href);
   }catch(error){
