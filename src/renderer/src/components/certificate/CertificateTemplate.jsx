@@ -54,9 +54,9 @@ const pdfConfig = {
     placeholder: rgb(0.5, 0.5, 0.5),
   },
   logo: {
-    maxWidth: 220,
-    maxHeight: 100,
-    gapAfter: 10, // Space between logo end and header line start
+    maxWidth: 240,
+    maxHeight: 120,
+    gapAfter: 5, // Space between logo end and header line start
   },
   signature: {
     minYFromBottom: 150, // Ensure signature block doesn't go too low
