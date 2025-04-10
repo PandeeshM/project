@@ -14,7 +14,6 @@ const CertificatePDF = () => {
   const [endDate, setEndDate] = useState("2025-06-01");
   const [logo, setLogo] = useState(null);
   const [signature, setSignature] = useState(null);
-  const [footer, setFooter] = useState(null);
   
   // UI state
   const [isGenerating, setIsGenerating] = useState(false);
@@ -66,7 +65,7 @@ const CertificatePDF = () => {
         if (!value) error = 'Visit date is required';
         break;
       case 'endDate':
-        if (!value) error = 'Issued date is required';
+        if (!value) error = 'Issue date is required';
         break;
       default:
         break;
@@ -100,7 +99,7 @@ const CertificatePDF = () => {
 
   // Handle image upload (logo/signature)
   const handleFileChange = (e, setter, type) => {
-  const file = e.target.files[0];
+    const file = e.target.files[0];
     if (file) {
       // Validate file type
       if (!file.type.match('image.*')) {
@@ -238,198 +237,191 @@ const CertificatePDF = () => {
     }
   };
 
-return (
+  return (
     <div className="certificate-container">
-      <div className="certificate-header">
+      <div className="page-header">
         <h1>Certificate Generator</h1>
-        <p>Create professional certificates for industrial visits</p>
+        <p>Create professional certificates with just a few clicks</p>
       </div>
 
-      <div className="certificate-content">
-        <div className="certificate-form">
-          <div className="form-section">
-            <h2>Student Information</h2>
-            <div>
+      <div className="certificate-workspace">
+        <div className="card">
+          <div className="card-header">
+            <h2>Certificate Details</h2>
+          </div>
+          <div className="card-body">
+            <div className="form-container">
+              {/* Student Information */}
               <div className="form-group">
                 <label htmlFor="name">Student Name</label>
-        <input
+                <input
                   id="name"
-          type="text"
-          value={name}
+                  type="text"
+                  value={name}
                   onChange={(e) => handleFieldChange('name', e.target.value)}
                   className={formTouched.name && formErrors.name ? 'error' : ''}
-        />
+                  placeholder="Enter student's full name"
+                />
                 {formTouched.name && formErrors.name && <div className="error-message">{formErrors.name}</div>}
               </div>
-              
+
               <div className="form-group">
-                <label htmlFor="college">College</label>
-        <input
+                <label htmlFor="college">College/Institution</label>
+                <input
                   id="college"
-          type="text"
-          value={college}
+                  type="text"
+                  value={college}
                   onChange={(e) => handleFieldChange('college', e.target.value)}
                   className={formTouched.college && formErrors.college ? 'error' : ''}
+                  placeholder="Enter college name"
                 />
                 {formTouched.college && formErrors.college && <div className="error-message">{formErrors.college}</div>}
               </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="year">Year</label>
-        <input
-                    id="year"
-          type="text"
-          value={year}
-                    onChange={(e) => handleFieldChange('year', e.target.value)}
-                    className={formTouched.year && formErrors.year ? 'error' : ''}
-        />
-                  {formTouched.year && formErrors.year && <div className="error-message">{formErrors.year}</div>}
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="course">Course</label>
-        <input
-                    id="course"
-          type="text"
-          value={course}
-                    onChange={(e) => handleFieldChange('course', e.target.value)}
-                    className={formTouched.course && formErrors.course ? 'error' : ''}
-                  />
-                  {formTouched.course && formErrors.course && <div className="error-message">{formErrors.course}</div>}
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <div className="form-section">
-            <h2>Visit Details</h2>
-            <div>
               <div className="form-group">
-                <label htmlFor="company">Company</label>
-        <input
+                <label htmlFor="year">Year & Department</label>
+                <input
+                  id="year"
+                  type="text"
+                  value={year}
+                  onChange={(e) => handleFieldChange('year', e.target.value)}
+                  className={formTouched.year && formErrors.year ? 'error' : ''}
+                  placeholder="e.g. II year B.Tech"
+                />
+                {formTouched.year && formErrors.year && <div className="error-message">{formErrors.year}</div>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="course">Course/Program</label>
+                <input
+                  id="course"
+                  type="text"
+                  value={course}
+                  onChange={(e) => handleFieldChange('course', e.target.value)}
+                  className={formTouched.course && formErrors.course ? 'error' : ''}
+                  placeholder="e.g. Computer Science"
+                />
+                {formTouched.course && formErrors.course && <div className="error-message">{formErrors.course}</div>}
+              </div>
+
+              {/* Visit Information */}
+              <div className="form-group">
+                <label htmlFor="company">Company/Organization</label>
+                <input
                   id="company"
-          type="text"
-          value={company}
+                  type="text"
+                  value={company}
                   onChange={(e) => handleFieldChange('company', e.target.value)}
                   className={formTouched.company && formErrors.company ? 'error' : ''}
-        />
+                  placeholder="Enter company name"
+                />
                 {formTouched.company && formErrors.company && <div className="error-message">{formErrors.company}</div>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="project">Technical Topics</label>
+                <label htmlFor="startDate">Visit Date</label>
+                <input
+                  id="startDate"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => handleFieldChange('startDate', e.target.value)}
+                  className={formTouched.startDate && formErrors.startDate ? 'error' : ''}
+                />
+                {formTouched.startDate && formErrors.startDate && <div className="error-message">{formErrors.startDate}</div>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="endDate">Certificate Issue Date</label>
+                <input
+                  id="endDate"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => handleFieldChange('endDate', e.target.value)}
+                  className={formTouched.endDate && formErrors.endDate ? 'error' : ''}
+                />
+                {formTouched.endDate && formErrors.endDate && <div className="error-message">{formErrors.endDate}</div>}
+              </div>
+
+              <div className="form-group" style={{ gridColumn: "span 2" }}>
+                <label htmlFor="project">Technical Topics Covered</label>
                 <textarea
                   id="project"
-          value={project}
+                  value={project}
                   onChange={(e) => handleFieldChange('project', e.target.value)}
-                  placeholder="Enter comma-separated topics"
+                  placeholder="Enter comma-separated topics covered during the visit"
                   rows="3"
                   className={formTouched.project && formErrors.project ? 'error' : ''}
                 />
                 {formTouched.project && formErrors.project && <div className="error-message">{formErrors.project}</div>}
               </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="startDate">Visit Date</label>
-        <input
-                    id="startDate"
-          type="date"
-          value={startDate}
-                    onChange={(e) => handleFieldChange('startDate', e.target.value)}
-                    className={formTouched.startDate && formErrors.startDate ? 'error' : ''}
-        />
-                  {formTouched.startDate && formErrors.startDate && <div className="error-message">{formErrors.startDate}</div>}
-                </div>
-                
-                <div className="form-group">
-                  
-                  <label htmlFor="endDate">Issued Date</label>
-        <input
-                    id="endDate"
-          type="date"
-          value={endDate}
-                    onChange={(e) => handleFieldChange('endDate', e.target.value)}
-                    className={formTouched.endDate && formErrors.endDate ? 'error' : ''}
+
+              {/* Certificate Assets */}
+              <div className="form-group file-upload">
+                <label htmlFor="logo">Company Logo</label>
+                <div className="file-input-container">
+                  <input
+                    id="logo"
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    onChange={(e) => handleFileChange(e, setLogo, 'Logo')}
                   />
-                  {formTouched.endDate && formErrors.endDate && <div className="error-message">{formErrors.endDate}</div>}
+                  <div className="file-preview">
+                    {logo ? (
+                      <img src={logo} alt="Logo preview" />
+                    ) : (
+                      <div className="placeholder-text">Upload logo</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group file-upload">
+                <label htmlFor="signature">Signature</label>
+                <div className="file-input-container">
+                  <input
+                    id="signature"
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    onChange={(e) => handleFileChange(e, setSignature, 'Signature')}
+                  />
+                  <div className="file-preview">
+                    {signature ? (
+                      <img src={signature} alt="Signature preview" />
+                    ) : (
+                      <div className="placeholder-text">Upload signature</div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
+
+            <div className="actions-bar">
+              <button 
+                onClick={resetForm} 
+                className="btn btn-secondary"
+                disabled={isGenerating}
+              >
+                Reset
+              </button>
+              <button 
+                onClick={generatePDF}
+                disabled={isGenerating}
+                className="btn btn-primary"
+              >
+                {isGenerating ? 'Generating...' : 'Generate Certificate'}
+              </button>
+            </div>
           </div>
-          
-          <div className="form-section">
-            <h2>Certificate Assets</h2>
-            <div>
-              <div className="form-row">
-                <div className="form-group file-upload">
-                  <label htmlFor="logo">Company Logo</label>
-                  <div className="file-input-container">
-                    <input
-                      id="logo"
-                      type="file"
-                      accept="image/png,image/jpeg"
-                      onChange={(e) => handleFileChange(e, setLogo, 'Logo')}
-                    />
-                    <div className="file-preview">
-                      {logo ? (
-                        <img src={logo} alt="Logo preview" />
-                      ) : (
-                        <div className="placeholder-text">Upload company logo</div>
-                      )}
-                    </div>
-                  </div>
         </div>
 
-                <div className="form-group file-upload">
-                  <label htmlFor="signature">Signature</label>
-                  <div className="file-input-container">
-          <input
-                      id="signature"
-            type="file"
-                      accept="image/png,image/jpeg"
-                      onChange={(e) => handleFileChange(e, setSignature, 'Signature')}
-                    />
-                    <div className="file-preview">
-                      {signature ? (
-                        <img src={signature} alt="Signature preview" />
-                      ) : (
-                        <div className="placeholder-text">Upload signature</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="form-actions">
-            <button 
-              onClick={generatePDF} 
-              disabled={isGenerating}
-              className="generate-btn"
-            >
-              {isGenerating ? 'Generating...' : 'Generate Certificate'}
-            </button>
-            <button 
-              onClick={resetForm} 
-              className="reset-btn"
-              disabled={isGenerating}
-            >
-              Reset Form
-            </button>
-          </div>
-        </div>
-        
-        <div className="certificate-preview-container">
-          <div className="certificate-preview-header">
+        <div className="card preview-card">
+          <div className="card-header">
             <h2>Certificate Preview</h2>
             {previewImg && (
               <a 
                 href={previewImg} 
                 download={`certificate_${name.replace(/\s+/g, '_')}.pdf`}
-                className="download-btn"
+                className="btn btn-accent"
                 title="Download PDF"
               >
                 Download PDF
@@ -454,8 +446,20 @@ return (
               </object>
             ) : (
               <div className="preview-placeholder">
-                <p>Your certificate preview will appear here</p>
-                <p className="hint">Fill in the form and click "Generate Certificate"</p>
+                <p>Certificate Preview</p>
+                <p className="hint">Certificate will appear here after generation</p>
+                <div className="preview-mockup">
+                  <div className="mockup-header"></div>
+                  <div className="mockup-content">
+                    <div className="mockup-title"></div>
+                    <div className="mockup-text"></div>
+                    <div className="mockup-text"></div>
+                    <div className="mockup-signature">
+                      <div className="mockup-sign"></div>
+                      <div className="mockup-sign-line"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

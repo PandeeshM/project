@@ -48,7 +48,7 @@ const App = () => {
         {activeTab === 'generator' && <CertificateForm />}
         {activeTab === 'templates' && (
           <div className="templates-container">
-            <div className="certificate-header">
+            <div className="page-header">
               <h1>Certificate Templates</h1>
               <p>Choose a template for your certificate</p>
             </div>
@@ -69,7 +69,7 @@ const App = () => {
                 </div>
                 <div className="template-info">
                   <h3>Completion Certificate</h3>
-                  <p>Coming soon</p>
+                  <p>Course completion and achievement certificates</p>
                 </div>
               </div>
               <div className="template-card">
@@ -78,7 +78,7 @@ const App = () => {
                 </div>
                 <div className="template-info">
                   <h3>Achievement Award</h3>
-                  <p>Coming soon</p>
+                  <p>Recognition for outstanding performance</p>
                 </div>
               </div>
             </div>
@@ -86,7 +86,7 @@ const App = () => {
         )}
         {activeTab === 'help' && (
           <div className="help-container">
-            <div className="certificate-header">
+            <div className="page-header">
               <h1>Help & Instructions</h1>
               <p>Learn how to use the Certificate Generator</p>
             </div>
@@ -104,17 +104,17 @@ const App = () => {
                 <h2>Customizing Your Certificate</h2>
                 <p>All fields in the form can be customized to fit your needs:</p>
                 <ul>
-                  <li>The student name will appear in bold on the certificate</li>
+                  <li>Student name will appear prominently on the certificate</li>
                   <li>Technical topics should be separated by commas</li>
-                  <li>Date will be automatically formatted for the certificate</li>
+                  <li>Dates will be automatically formatted for a professional look</li>
                 </ul>
               </div>
               <div className="help-section">
                 <h2>Uploading Images</h2>
-                <p>For best results:</p>
+                <p>For best results with your certificate images:</p>
                 <ul>
                   <li>Use PNG images with transparent backgrounds</li>
-                  <li>Logo should be at least 250×250 pixels</li>
+                  <li>Company logo should be at least 250×250 pixels</li>
                   <li>Signature should be at least 150×60 pixels</li>
                 </ul>
               </div>
