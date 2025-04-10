@@ -65,6 +65,9 @@ const CertificatePDF = () => {
       case 'startDate':
         if (!value) error = 'Visit date is required';
         break;
+      case 'endDate':
+        if (!value) error = 'Issued date is required';
+        break;
       default:
         break;
     }
@@ -125,7 +128,7 @@ const CertificatePDF = () => {
 
   // Validate entire form before submission
   const validateForm = () => {
-    const fields = ['name', 'college', 'year', 'course', 'company', 'project', 'startDate'];
+    const fields = ['name', 'college', 'year', 'course', 'company', 'project', 'startDate', 'endDate'];
     const errors = {};
     let isValid = true;
     
@@ -139,6 +142,7 @@ const CertificatePDF = () => {
         case 'company': value = company; break;
         case 'project': value = project; break;
         case 'startDate': value = startDate; break;
+        case 'endDate': value = endDate; break;
         default: value = ''; break;
       }
       
@@ -340,13 +344,16 @@ return (
                 </div>
                 
                 <div className="form-group">
-                  <label htmlFor="endDate">End Date (if applicable)</label>
+                  
+                  <label htmlFor="endDate">Issued Date</label>
         <input
                     id="endDate"
           type="date"
           value={endDate}
                     onChange={(e) => handleFieldChange('endDate', e.target.value)}
+                    className={formTouched.endDate && formErrors.endDate ? 'error' : ''}
                   />
+                  {formTouched.endDate && formErrors.endDate && <div className="error-message">{formErrors.endDate}</div>}
                 </div>
               </div>
             </div>

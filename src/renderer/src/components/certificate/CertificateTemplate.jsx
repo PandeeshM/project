@@ -8,7 +8,7 @@ const pdfConfig = {
     height: 842, // A4 height in points
   },
   margins: {
-    top: 50,
+    top: 30,
     bottom: 80, // Accounts for footer height
     left: 50,
     right: 50,
@@ -175,7 +175,7 @@ const formatDateWithSuffix = (date) => {
  * Draws the header section (Logo, Line, Date).
  * Returns the Y position below the header content.
  */
-const drawHeader = async (page, pdfDoc, config, logo) => {
+const drawHeader = async (page, pdfDoc, config, logo, issuedDate) => {
     let currentY = config.headerBaseY;
     let logoEndX = config.margins.left;
     let logoCenterY = config.headerBaseY - 30; // Default vertical center if no logo
@@ -239,7 +239,8 @@ const drawHeader = async (page, pdfDoc, config, logo) => {
     });
 
     // --- Date --- (Positioned below the line)
-    const formattedIssueDate = formatDateWithSuffix(new Date());
+    const dateToFormat = issuedDate ? new Date(issuedDate + 'T00:00:00') : new Date(); // Handle potential null/undefined and ensure correct date parsing
+    const formattedIssueDate = formatDateWithSuffix(dateToFormat);
     const dateText = `Date: ${formattedIssueDate}`;
     const dateTextWidth = config.fonts.regular.widthOfTextAtSize(dateText, config.fontSizes.date);
     const dateY = lineY - 15; // Fixed offset below the line
@@ -337,28 +338,38 @@ const drawBody = (page, config, data, startY) => {
     // Add specific extra space *before* the list items
     currentY = introEndY - config.spacing.beforeTechList;
 
-    // Format and draw the project list (bold)
-    // Ensure clean numbering: Assumes input like "Topic A, Topic B and Topic C"
-    // 1) Topic A, 2) Topic B and 3) Topic C
-    let formattedProject = `1) ${project}`;
-    formattedProject = formattedProject.replace(/,\s*and\s+/gi, ", 2) and "); // Handle 'and' between 1 and 2 if present
-    formattedProject = formattedProject.replace(/,\s*/g, ", 2) "); // Basic comma separation
-    formattedProject = formattedProject.replace(/and\s+/gi, "and 3) "); // Find remaining 'and' for the third item
-    // This regex approach is brittle; a more robust solution would parse the string properly.
-    // Assuming the input format is consistent for now.
+    // --- Format and draw the project list (bold) as a single wrapped paragraph ---
+    const topics = project
+      .replace(/\band\b/gi, ',') // Replace 'and' with a comma
+      .split(',')              // Split by comma
+      .map(topic => topic.trim()) // Trim whitespace from each topic
+      .filter(topic => topic.length > 0); // Remove empty topics
 
-    currentY = drawWrappedText(page, formattedProject, {
-        x: marginLeft + 15, // Indent list items
-        y: currentY,
-        font: config.fonts.bold, // List items are bold
-        size: bodyFontSize,
-        color: config.colors.boldText,
-        maxWidth: contentWidth - 15, // Adjust maxWidth for indentation
-        lineHeight: bodyLineHeight,
-    });
+    // Create the numbered list string, joined by commas
+    const formattedProjectList = topics
+      .map((topic, index) => `${index + 1}) ${topic}`)
+      .join(', '); // Join topics with comma and space
+
+    // Draw the formatted list as a single wrapped block if there are topics
+    if (formattedProjectList) {
+        currentY = drawWrappedText(page, formattedProjectList, {
+            x: marginLeft + 15, // Indent list paragraph
+            y: currentY,
+            font: config.fonts.bold, // List items are bold
+            size: bodyFontSize,
+            color: config.colors.boldText,
+            maxWidth: contentWidth - 15, // Adjust maxWidth for indentation
+            lineHeight: bodyLineHeight,
+        });
+    } else {
+        // If no topics, just adjust Y position based on spacing (drawWrappedText wasn't called)
+        currentY -= bodyLineHeight; // Move down one line height equivalent
+    }
 
     // --- Closing Line ---
-    currentY -= config.spacing.afterTechList; // Space after list
+    // Adjust spacing based on whether the list was drawn or not
+    currentY -= config.spacing.afterTechList;
+
     const closingLine = "We wish him/her great success in all of his/her future endeavours.";
     currentY = drawWrappedText(page, closingLine, {
         x: marginLeft,
@@ -593,7 +604,7 @@ export const generateCertificatePDF = async (certificateData) => {
     // --- Draw Sections Sequentially ---
     let currentY = pdfConfig.headerBaseY; // Start drawing from the top
 
-    currentY = await drawHeader(page, pdfDoc, pdfConfig, logo);
+    currentY = await drawHeader(page, pdfDoc, pdfConfig, logo, bodyData.endDate);
 
     // Adjust starting Y for body based on header output, plus initial spacing
     // drawHeader returns Y *below* the date line.
