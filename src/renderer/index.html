@@ -1,9 +1,9 @@
 <!doctype html>
 <html>
   <head>
-
     <meta charset="UTF-8" />
-    <title>Electron</title>
+    <title>Certificate Generator</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%2376ab44' d='M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M9,13H15V15H9V13M9,17H15V19H9V17M9,9H11V11H9V9Z'/%3E%3C/svg%3E" type="image/svg+xml">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <meta
     http-equiv="Content-Security-Policy"
@@ -12,11 +12,11 @@
       script-src 'self' ; 
       style-src 'self' 'unsafe-inline'; 
       img-src 'self' data:; 
-      connect-src 'self' data:; 
-      object-src 'none'; 
-      frame-src 'self';"
+      connect-src 'self' data: blob:; 
+      object-src 'self' blob:; 
+      frame-src 'self' blob:;"
   >
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  </head>
 
   <body>
