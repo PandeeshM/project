@@ -4,14 +4,14 @@ import { generateCertificatePDF } from "./components/certificate";
 
 const CertificatePDF = () => {
   // Form state
-  const [name, setName] = useState("Ms Jane Doe");
-  const [college, setCollege] = useState("IFET College of Engineering, Villupuram");
-  const [year, setYear] = useState("II year B.Tech");
-  const [course, setCourse] = useState("Artificial Intelligence and Data Science");
-  const [company, setCompany] = useState("AAHA Solutions.");
-  const [project, setProject] = useState("1) React.js,2) Redux and 3)Test Automation using selenium");
-  const [startDate, setStartDate] = useState("2025-01-01");
-  const [endDate, setEndDate] = useState("2025-06-01");
+  const [name, setName] = useState("");
+  const [college, setCollege] = useState("");
+  const [year, setYear] = useState("");
+  const [course, setCourse] = useState("");
+  const [company, setCompany] = useState("");
+  const [project, setProject] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [logo, setLogo] = useState(null);
   const [signature, setSignature] = useState(null);
   
@@ -166,14 +166,14 @@ const CertificatePDF = () => {
   
   // Reset form to default values
   const resetForm = () => {
-    setName("Ms Jane Doe");
-    setCollege("IFET College of Engineering, Villupuram");
-    setYear("II year B.Tech");
-    setCourse("Artificial Intelligence and Data Science");
-    setCompany("AAHA Solutions.");
-    setProject("1) React.js,2) Redux and 3)Test Automation using selenium");
-    setStartDate("2025-01-01");
-    setEndDate("2025-06-01");
+    setName("");
+    setCollege("");
+    setYear("");
+    setCourse("");
+    setCompany("");
+    setProject("");
+    setStartDate("");
+    setEndDate("");
     setLogo(null);
     setSignature(null);
     setFormErrors({});
@@ -215,20 +215,11 @@ const CertificatePDF = () => {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       setPreviewImg(pdfUrl);
       
-      // Create download link
-      const link = document.createElement("a");
-      link.href = pdfUrl;
-      link.download = `certificate_${name.replace(/\s+/g, '_')}.pdf`;
-      link.click();
+      // We no longer auto-download here, letting user use the download button instead
       
       // Show success message
       showToast('Certificate generated successfully!', 'success');
-      
-      // Cleanup
-      setTimeout(() => {
-        URL.revokeObjectURL(link.href);
-        setIsGenerating(false);
-      }, 1000);
+      setIsGenerating(false);
       
     } catch (error) {
       console.error("Error generating PDF:", error);
@@ -236,6 +227,35 @@ const CertificatePDF = () => {
       showToast('Error generating certificate. Please try again.', 'error');
     }
   };
+
+  // Add a dedicated download function
+  const downloadPDF = () => {
+    if (!previewImg) return;
+    
+    try {
+      // Create a temporary link element
+      const link = document.createElement("a");
+      link.href = previewImg;
+      link.download = `certificate_${name.replace(/\s+/g, '_')}.pdf`;
+      document.body.appendChild(link); // Append to body for Firefox compatibility
+      link.click();
+      document.body.removeChild(link); // Clean up
+      
+      showToast('Certificate download started', 'success');
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      showToast('Error downloading certificate. Please try again.', 'error');
+    }
+  };
+
+  // Clean up object URLs when component unmounts or when preview changes
+  useEffect(() => {
+    return () => {
+      if (previewImg) {
+        URL.revokeObjectURL(previewImg);
+      }
+    };
+  }, [previewImg]);
 
   return (
     <div className="certificate-container">
@@ -418,14 +438,13 @@ const CertificatePDF = () => {
           <div className="card-header">
             <h2>Certificate Preview</h2>
             {previewImg && (
-              <a 
-                href={previewImg} 
-                download={`certificate_${name.replace(/\s+/g, '_')}.pdf`}
-                className="btn btn-accent"
+              <button 
+                onClick={downloadPDF}
+                className="btn btn-primary"
                 title="Download PDF"
               >
-                Download PDF
-              </a>
+                <span className="btn-text">Download Certificate</span>
+              </button>
             )}
           </div>
           <div className="preview-container">
@@ -435,15 +454,16 @@ const CertificatePDF = () => {
               </div>
             )}
             {previewImg ? (
-              <object
-                data={previewImg}
-                type="application/pdf"
-                width="100%"
-                height="100%"
-                title="Certificate Preview"
-              >
-                <p>Unable to display PDF. <a href={previewImg} target="_blank" rel="noopener noreferrer">Download</a> instead.</p>
-              </object>
+              <div className="pdf-viewer-container">
+                <object
+                  data={previewImg}
+                  type="application/pdf"
+                  className="pdf-viewer"
+                  title="Certificate Preview"
+                >
+                  <p>Unable to display PDF. <button onClick={downloadPDF}>Download</button> instead.</p>
+                </object>
+              </div>
             ) : (
               <div className="preview-placeholder">
                 <p>Certificate Preview</p>

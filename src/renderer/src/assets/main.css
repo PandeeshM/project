@@ -477,12 +477,14 @@ input[type="date"] {
 }
 
 .preview-container {
-  flex: 1;
-  height: 550px;
   position: relative;
-  background-color: #F8FAFC;
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  width: 100%;
+  height: calc(100vh - 200px);
+  min-height: 600px;
+  max-height: 800px;
   overflow: hidden;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--gray-light);
 }
 
 .preview-placeholder {
@@ -878,7 +880,8 @@ object {
 /* Responsive Styles */
 @media (max-width: 1280px) {
   .preview-container {
-    height: 500px;
+    height: calc(100vh - 220px);
+    min-height: 500px;
   }
 }
 
@@ -944,6 +947,34 @@ object {
   .help-content {
     padding: 16px;
   }
+  
+  .preview-container {
+    height: 400px;
+    min-height: 350px;
+  }
+  
+  .pdf-viewer {
+    min-height: 350px;
+  }
+}
+
+/* PDF Viewer styles */
+.pdf-viewer-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  background-color: var(--gray-light);
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  min-height: 600px;
 }
 
 

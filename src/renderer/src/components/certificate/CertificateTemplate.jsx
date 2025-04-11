@@ -284,7 +284,7 @@ const drawBody = (page, config, data, startY) => {
     // --- Main Content Paragraph ---
     currentY -= config.spacing.paragraph; // Space before main paragraph
     const prefixText = "This is to certify that ";
-    const mainBodyText = `of Second Year ${year} ${course} from ${college} attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formatDateWithSuffix(new Date(startDate))}.`;
+    const mainBodyText = ` of ${year} ${course} from ${college} attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formatDateWithSuffix(new Date(startDate))}.`;
 
     const prefixWidth = config.fonts.regular.widthOfTextAtSize(prefixText, bodyFontSize);
     const nameWidth = config.fonts.bold.widthOfTextAtSize(name, bodyFontSize);
