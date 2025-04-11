@@ -154,18 +154,17 @@ const drawWrappedText = (page, text, options) => {
 
 
 /**
- * Format date for display (e.g., 4th April 2025)
+ * Format date for display (e.g., 28-01-2025)
  */
-const formatDateWithSuffix = (date) => {
+const formatDateWithDashes = (date) => {
   if (!(date instanceof Date) || isNaN(date)) return "Invalid Date";
-  const day = date.getDate();
-  const month = date.toLocaleString('en-US', { month: 'long' });
+  
+  // Format as DD-MM-YYYY
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
-  let suffix = "th";
-  if (day % 10 === 1 && day !== 11) suffix = "st";
-  else if (day % 10 === 2 && day !== 12) suffix = "nd";
-  else if (day % 10 === 3 && day !== 13) suffix = "rd";
-  return `${day}${suffix} ${month} ${year}`;
+  
+  return `${day}-${month}-${year}`;
 };
 
 
@@ -240,8 +239,8 @@ const drawHeader = async (page, pdfDoc, config, logo, issuedDate) => {
 
     // --- Date --- (Positioned below the line)
     const dateToFormat = issuedDate ? new Date(issuedDate + 'T00:00:00') : new Date(); // Handle potential null/undefined and ensure correct date parsing
-    const formattedIssueDate = formatDateWithSuffix(dateToFormat);
-    const dateText = `Date: ${formattedIssueDate}`;
+    const formattedIssueDate = formatDateWithDashes(dateToFormat);
+    const dateText = `Issued Date: ${formattedIssueDate}`;
     const dateTextWidth = config.fonts.regular.widthOfTextAtSize(dateText, config.fontSizes.date);
     const dateY = lineY - 15; // Fixed offset below the line
     page.drawText(dateText, {
@@ -284,7 +283,8 @@ const drawBody = (page, config, data, startY) => {
     // --- Main Content Paragraph ---
     currentY -= config.spacing.paragraph; // Space before main paragraph
     const prefixText = "This is to certify that ";
-    const mainBodyText = ` of ${year} ${course} from ${college} attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formatDateWithSuffix(new Date(startDate))}.`;
+    const formattedDate = formatDateWithDashes(new Date(startDate));
+    const mainBodyText = ` of ${year} ${course} from ${college} attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formattedDate}.`;
 
     const prefixWidth = config.fonts.regular.widthOfTextAtSize(prefixText, bodyFontSize);
     const nameWidth = config.fonts.bold.widthOfTextAtSize(name, bodyFontSize);
@@ -345,7 +345,7 @@ const drawBody = (page, config, data, startY) => {
       .map(topic => topic.trim()) // Trim whitespace from each topic
       .filter(topic => topic.length > 0); // Remove empty topics
 
-    // Create the numbered list string, joined by commas
+    // Create the numbered list string, joined with commas
     const formattedProjectList = topics
       .map((topic, index) => `${index + 1}) ${topic}`)
       .join(', '); // Join topics with comma and space
@@ -384,6 +384,39 @@ const drawBody = (page, config, data, startY) => {
     return currentY; // Return Y position below the closing line
 };
 
+// Helper function to calculate the width of the last line of wrapped text
+const calculateLastLineWidth = (text, initialX, marginX, maxWidth, font, fontSize) => {
+    // Simple approximation - if text is empty, return 0
+    if (!text) return 0;
+    
+    const words = text.split(' ');
+    let currentLine = '';
+    let currentX = initialX;
+    let isFirstLineSegment = true;
+    let lastLineWidth = 0;
+    
+    for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+        
+        // Calculate available width for current segment
+        const availableWidth = isFirstLineSegment ? (marginX + maxWidth) - currentX : maxWidth;
+        
+        if (testWidth <= availableWidth) {
+            // Word fits, add to current line
+            currentLine = testLine;
+            lastLineWidth = isFirstLineSegment ? initialX + testWidth - marginX : testWidth;
+        } else {
+            // Word doesn't fit, start new line
+            currentLine = word;
+            lastLineWidth = font.widthOfTextAtSize(word, fontSize);
+            currentX = marginX;
+            isFirstLineSegment = false;
+        }
+    }
+    
+    return lastLineWidth;
+};
 
 /**
  * Draws the signature block (Regards, Image, Name, Title).
