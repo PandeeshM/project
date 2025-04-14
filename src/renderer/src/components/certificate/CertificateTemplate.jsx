@@ -47,10 +47,10 @@ const pdfConfig = {
     text: rgb(0.1, 0.1, 0.1),
     boldText: rgb(0, 0, 0),
     headerLine: rgb(0.4, 0.4, 0.4),
-    footerBackground: rgb(0.3, 0.7, 0.2),
+    footerBackground: rgb(0.4627450980392157, 0.6588235294117647, 0.2627450980392157),
     footerCapsule: rgb(1, 1, 1),
     footerText: rgb(0.1, 0.1, 0.1),
-    error: rgb(1, 0, 0),
+    error: rgb(1, 0, 0),  
     placeholder: rgb(0.5, 0.5, 0.5),
   },
   logo: {
