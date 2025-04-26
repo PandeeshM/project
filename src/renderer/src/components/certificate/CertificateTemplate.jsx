@@ -262,7 +262,7 @@ const drawHeader = async (page, pdfDoc, config, logo, issuedDate) => {
 const drawBody = (page, config, data, startY) => {
     let currentY = startY;
     const { name, college, year, course, company, project, startDate } = data;
-    const { left: marginLeft, right: marginRight } = config.margins;
+    const { left: marginLeft } = config.margins;
     const contentWidth = config.contentWidth;
     const bodyFontSize = config.fontSizes.body;
     const bodyLineHeight = config.lineHeights.body;
@@ -284,11 +284,13 @@ const drawBody = (page, config, data, startY) => {
     currentY -= config.spacing.paragraph; // Space before main paragraph
     const prefixText = "This is to certify that ";
     const formattedDate = formatDateWithDashes(new Date(startDate));
-    const mainBodyText = ` of ${year} ${course} from ${college} attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formattedDate}.`;
+    const mainBodyText = ` of ${year} ${course} from `;
+    const suffixText = ` attended the Industrial Visit programme at ${company}, at 27, 3rd Cross Brindavan, Pondicherry on ${formattedDate}.`;
 
     const prefixWidth = config.fonts.regular.widthOfTextAtSize(prefixText, bodyFontSize);
     const nameWidth = config.fonts.bold.widthOfTextAtSize(name, bodyFontSize);
     const spaceWidth = config.fonts.regular.widthOfTextAtSize(' ', bodyFontSize);
+    const mainBodyWidth = config.fonts.regular.widthOfTextAtSize(mainBodyText, bodyFontSize);
 
     // Draw prefix (regular) and name (bold) on the same line
     page.drawText(prefixText, {
@@ -296,36 +298,79 @@ const drawBody = (page, config, data, startY) => {
         y: currentY,
         size: bodyFontSize,
         font: config.fonts.regular,
-        color: config.colors.text
+        color: config.colors.text,
     });
     page.drawText(name, {
         x: marginLeft + prefixWidth,
         y: currentY,
         size: bodyFontSize,
         font: config.fonts.bold,
-        color: config.colors.boldText
+        color: config.colors.boldText,
     });
 
-    // Draw the rest of the paragraph, starting after the name and wrapping
-    const initialXForBody = marginLeft + prefixWidth + nameWidth + spaceWidth;
-    currentY = drawWrappedText(page, mainBodyText, {
-        x: marginLeft, // Base X for subsequent lines
-        y: currentY,   // Starting Y for the whole block
-        font: config.fonts.regular,
+    // Draw the main body text (regular)
+    page.drawText(mainBodyText, {
+        x: marginLeft + prefixWidth + nameWidth + spaceWidth,
+        y: currentY,
         size: bodyFontSize,
+        font: config.fonts.regular,
         color: config.colors.text,
-        maxWidth: contentWidth,
-        lineHeight: bodyLineHeight,
-        initialX: initialXForBody // Start first segment after the name
     });
-    // drawWrappedText returns Y below the text, so no need to subtract lineHeight here
+
+    // Calculate the width of the remaining space on the current line
+    const remainingWidth = contentWidth - (prefixWidth + nameWidth + spaceWidth + mainBodyWidth);
+
+    // Check if the college name fits on the current line
+    const collegeWidth = config.fonts.bold.widthOfTextAtSize(college, bodyFontSize);
+    if (collegeWidth <= remainingWidth) {
+        // College name fits on the current line
+        page.drawText(college, {
+            x: marginLeft + prefixWidth + nameWidth + spaceWidth + mainBodyWidth,
+            y: currentY,
+            size: bodyFontSize,
+            font: config.fonts.bold,
+            color: config.colors.boldText,
+        });
+
+        // Draw the suffix text (regular) on the same line
+        currentY = drawWrappedText(page, suffixText, {
+            x: marginLeft + prefixWidth + nameWidth + spaceWidth + mainBodyWidth + collegeWidth + spaceWidth,
+            y: currentY,
+            font: config.fonts.regular,
+            size: bodyFontSize,
+            color: config.colors.text,
+            maxWidth: contentWidth,
+            lineHeight: bodyLineHeight,
+        });
+    } else {
+        // Move the college name to the next line
+        currentY -= bodyLineHeight; // Move to the next line
+        page.drawText(college, {
+            x: marginLeft,
+            y: currentY,
+            size: bodyFontSize,
+            font: config.fonts.bold,
+            color: config.colors.boldText,
+        });
+
+        // Draw the suffix text (regular) on the next line
+        currentY = drawWrappedText(page, suffixText, {
+            x: marginLeft,
+            y: currentY - bodyLineHeight, // Add spacing before the suffix text
+            font: config.fonts.regular,
+            size: bodyFontSize,
+            color: config.colors.text,
+            maxWidth: contentWidth,
+            lineHeight: bodyLineHeight,
+        });
+    }
 
     // --- Technical Session Section ---
     currentY -= config.spacing.afterMainBody; // Space after main paragraph
-    const techIntro = 'During the Industrial Visit, the students participated in a technical session on topics:';
+    const techIntro = 'During the Industrial Visit, the students participated in a technical session on the following topics:';
 
     // Draw intro line first
-    let introEndY = drawWrappedText(page, techIntro, {
+    currentY = drawWrappedText(page, techIntro, {
         x: marginLeft,
         y: currentY,
         font: config.fonts.regular,
@@ -336,38 +381,28 @@ const drawBody = (page, config, data, startY) => {
     });
 
     // Add specific extra space *before* the list items
-    currentY = introEndY - config.spacing.beforeTechList;
+    currentY -= config.spacing.beforeTechList;
 
-    // --- Format and draw the project list (bold) as a single wrapped paragraph ---
+    // --- Draw the topics as bullet points ---
     const topics = project
-      .replace(/\band\b/gi, ',') // Replace 'and' with a comma
-      .split(',')              // Split by comma
-      .map(topic => topic.trim()) // Trim whitespace from each topic
-      .filter(topic => topic.length > 0); // Remove empty topics
+        .replace(/\band\b/gi, ',') // Replace 'and' with a comma
+        .split(',')              // Split by comma
+        .map(topic => topic.trim()) // Trim whitespace from each topic
+        .filter(topic => topic.length > 0); // Remove empty topics
 
-    // Create the numbered list string, joined with commas
-    const formattedProjectList = topics
-      .map((topic, index) => `${index + 1}) ${topic}`)
-      .join(', '); // Join topics with comma and space
-
-    // Draw the formatted list as a single wrapped block if there are topics
-    if (formattedProjectList) {
-        currentY = drawWrappedText(page, formattedProjectList, {
-            x: marginLeft + 15, // Indent list paragraph
+    topics.forEach((topic) => {
+        const bulletPoint = `• ${topic}`;
+        page.drawText(bulletPoint, {
+            x: marginLeft + 15, // Indent for bullet points
             y: currentY,
-            font: config.fonts.bold, // List items are bold
             size: bodyFontSize,
-            color: config.colors.boldText,
-            maxWidth: contentWidth - 15, // Adjust maxWidth for indentation
-            lineHeight: bodyLineHeight,
+            font: config.fonts.regular,
+            color: config.colors.text,
         });
-    } else {
-        // If no topics, just adjust Y position based on spacing (drawWrappedText wasn't called)
-        currentY -= bodyLineHeight; // Move down one line height equivalent
-    }
+        currentY -= bodyLineHeight; // Move down for the next bullet point
+    });
 
     // --- Closing Line ---
-    // Adjust spacing based on whether the list was drawn or not
     currentY -= config.spacing.afterTechList;
 
     const closingLine = "We wish him/her great success in all of his/her future endeavours.";
